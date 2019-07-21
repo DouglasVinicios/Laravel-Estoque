@@ -19,7 +19,7 @@ Route::group(['prefix' => '/produtos', 'middleware' => 'auth'], function() {
     Route::get('/json', 'ProdutoController@listaJson');
     Route::get('/mostra/{id?}', 'ProdutoController@mostra')->where('id', '[0-9]+');
     Route::get('/novo', 'ProdutoController@novo');
-    Route::get('/altera/{id}', 'ProdutoController@altera');
+    Route::get('/altera/{id?}', 'ProdutoController@altera')->where('id', '[0-9]+');
     Route::post('/adiciona', 'ProdutoController@adiciona');
     Route::post('/update', 'ProdutoController@update');
     Route::get('/remove/{id}', 'ProdutoController@remove');

@@ -32,9 +32,6 @@ class ProdutoController extends Controller
     public function mostra($id)
     {
         $produto = Produto::findOrFail($id);
-        if (empty($produto)) {
-            return "Esse produto não existe";
-        }
         return view('produto/detalhes')
             ->with('p', $produto);
     }
@@ -42,40 +39,35 @@ class ProdutoController extends Controller
     public function novo()
     {
         return view('produto/formulario')
-            ->with('action', 'adiciona');
+            ->with('p', new Produto());
     }
 
     public function altera($id)
     {
         $produto = Produto::findOrFail($id);
-        if (empty($produto)) {
-            return "Esse produto não existe";
-        }
         return view('produto/formulario')
-            ->with('p', $produto)
-            ->with('action', 'update');
+            ->with('p', $produto);
     }
 
-    public function update()
-    {
-        if(empty(Request::only('id'))) {
-            return redirect()
-                ->action('ProdutoController@lista');
-        }
-
-
-        return redirect()
-            ->action('ProdutoController@lista')
-            ->with('nome', Request::only('nome'));
-    }
-
+    // enquanto nao tem o service, adiciona novo ou altera existente
     public function adiciona(ProdutoRequest $request)
     {
+        // se id for vazio
+        if (empty($request->get('id'))) {
+            Produto::create($request->all());
 
-        Produto::create($request->all());
+        } else {
+            $p = Produto::findOrFail($request->get('id'));
+            $p->nome = $request->get('nome');
+            $p->valor = $request->get('valor');
+            $p->descricao = $request->get('descricao');
+            $p->quantidade = $request->get('quantidade');
+            $p->save();
 
-//        equivalente ao de cima
-//        $params = Request::all();
+        }
+
+//        equivalente ao Produto::create($request->all());
+//        $params = $request->all();
 //        $produto = new Produto($params);
 //        $produto->save();
 
